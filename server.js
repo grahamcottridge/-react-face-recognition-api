@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt-nodejs');
 
 const app = express();
 
@@ -31,6 +32,12 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
+  bcrypt.compare("jelly", hash, function(err, res) {
+    // res == true
+  });
+  bcrypt.compare("veggies", hash, function(err, res) {
+    // res = false
+  });
   if (req.body.email === database.users[0].email
     && req.body.password === database.users[0].password) {
     res.json('success');
@@ -41,6 +48,10 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
+  bcrypt.hash(password, null, null, function(err, hash) {
+    console.log(hash);
+});
+
   database.users.push({
     id: '125',
     name: name,
@@ -86,11 +97,3 @@ app.listen(3000, () => {
   console.log('app is running on port 3000');
 })
 
-
-/*
-/ --> res = this is working
-/signin --> POST = success/fail (POST so password is secure!!!)
-/register --> POST = user
-/profile/:userId --> GET = user
-/image --> PUT --> user
-*/
